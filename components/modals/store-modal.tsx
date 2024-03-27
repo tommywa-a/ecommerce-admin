@@ -87,7 +87,12 @@ export const StoreModal = () => {
 								>
 									Cancel
 								</Button>
-								<Button disabled={loading} type='submit'>Create and continue</Button>
+								<Button
+									disabled={loading}
+									type='submit'
+								>
+									Create and continue
+								</Button>
 							</div>
 						</form>
 					</Form>
