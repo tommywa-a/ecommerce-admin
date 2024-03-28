@@ -10,8 +10,18 @@ import { Separator } from '@/components/ui/separator'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import toast from 'react-hot-toast'
+import { useParams, useRouter } from 'next/navigation'
+import axios from 'axios'
 
 interface SettingsFormProps {
 	initialData: Store
@@ -24,12 +34,25 @@ const formSchema = z.object({
 type SettingsFormValues = z.infer<typeof formSchema>
 
 export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
-	const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
+	const params = useParams()
+  const router = useRouter()
+  
+  const [open, setOpen] = useState(false)
+	const [loading, setLoading] = useState(false)
 
-  const onSubmit = async (data: SettingsFormValues) => {
-    console.log(data);
-  }
+	const onSubmit = async (data: SettingsFormValues) => {
+		try {
+			setLoading(true)
+      await axios.patch(`/api/stores/${params.storeId}`, data)
+      router.refresh()
+      toast.success('Settings updated')
+      
+		} catch (error) {
+			toast.error('Failed to update settings')
+		} finally {
+			setLoading(false)
+		}
+	}
 
 	const form = useForm<SettingsFormValues>({
 		resolver: zodResolver(formSchema),
@@ -44,7 +67,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 					description="Update your store's settings."
 				/>
 				<Button
-          disabled={loading}
+					disabled={loading}
 					variant='destructive'
 					size='icon'
 					onClick={() => setOpen(true)}
@@ -53,28 +76,39 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 				</Button>
 			</div>
 			<Separator />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 w-full'>
-          <div className="grid grid-cols-3 gap-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder='Store name' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button type="submit" disabled={loading} className='ml-auto'>
-            Save changes
-          </Button>
-        </form>
-      </Form>
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					className='space-y-8 w-full'
+				>
+					<div className='grid grid-cols-3 gap-8'>
+						<FormField
+							control={form.control}
+							name='name'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Name</FormLabel>
+									<FormControl>
+										<Input
+											disabled={loading}
+											placeholder='Store name'
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					<Button
+						type='submit'
+						disabled={loading}
+						className='ml-auto'
+					>
+						Save changes
+					</Button>
+				</form>
+			</Form>
 		</>
 	)
 }
