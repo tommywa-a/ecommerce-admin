@@ -25,7 +25,13 @@ import { useParams, useRouter } from 'next/navigation'
 import axios from 'axios'
 import { AlertModal } from '@/components/modals/alert-modal'
 import ImageUpload from '@/components/ui/image-upload'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import {
+	Select,
+	SelectTrigger,
+	SelectValue,
+	SelectContent,
+	SelectItem,
+} from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 
 const formSchema = z.object({
@@ -42,13 +48,18 @@ const formSchema = z.object({
 type ProductFormValues = z.infer<typeof formSchema>
 
 interface ProductFormProps {
-	initialData: Product & { images: Image[] } | null
+	initialData: (Product & { images: Image[] }) | null
 	categories: Category[]
 	colors: Color[]
 	sizes: Size[]
 }
 
-export const ProductForm: React.FC<ProductFormProps> = ({ initialData, categories, colors, sizes }) => {
+export const ProductForm: React.FC<ProductFormProps> = ({
+	initialData,
+	categories,
+	colors,
+	sizes,
+}) => {
 	const params = useParams()
 	const router = useRouter()
 
@@ -104,16 +115,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, categorie
 	const onDelete = async () => {
 		try {
 			setLoading(true)
-			await axios.delete(
-				`/api/${params.storeId}/products/${params.productId}`
-			)
+			await axios.delete(`/api/${params.storeId}/products/${params.productId}`)
 			router.refresh()
 			router.push(`/${params.storeId}/products`)
 			toast.success('Product deleted')
 		} catch (error) {
-			toast.error(
-				'Something went wrong trying to delete the product.'
-			)
+			toast.error('Something went wrong trying to delete the product.')
 		} finally {
 			setLoading(false)
 			setOpen(false)
@@ -165,8 +172,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, categorie
 										}
 										onRemove={(url) =>
 											field.onChange([
-												...field.value.filter((current) => current.url !== url)]
-											)
+												...field.value.filter((current) => current.url !== url),
+											])
 										}
 									/>
 								</FormControl>
@@ -319,17 +326,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, categorie
 							control={form.control}
 							name='isFeatured'
 							render={({ field }) => (
-								<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+								<FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
 									<FormControl>
 										<Checkbox
 											checked={field.value}
-											onChange={field.onChange}
+											// @ts-ignore
+											onCheckedChange={field.onChange}
 										/>
 									</FormControl>
 									<div className='space-y-1 leading-none'>
 										<FormLabel>Featured</FormLabel>
 										<FormDescription>
-											If checked, this product will appear as "Featured" on the store home page.
+											If checked, this product will appear as "Featured" on the
+											store home page.
 										</FormDescription>
 									</div>
 								</FormItem>
@@ -339,11 +348,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, categorie
 							control={form.control}
 							name='isArchived'
 							render={({ field }) => (
-								<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+								<FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
 									<FormControl>
 										<Checkbox
 											checked={field.value}
-											onChange={field.onChange}
+											// @ts-ignore
+											onCheckedChange={field.onChange}
 										/>
 									</FormControl>
 									<div className='space-y-1 leading-none'>
