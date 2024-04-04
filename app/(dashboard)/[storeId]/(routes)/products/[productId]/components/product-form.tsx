@@ -84,14 +84,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, categorie
 			setLoading(true)
 			if (initialData) {
 				await axios.patch(
-					`/api/${params.storeId}/billboards/${params.billboardId}`,
+					`/api/${params.storeId}/products/${params.productId}`,
 					data
 				)
 			} else {
-				await axios.post(`/api/${params.storeId}/billboards`, data)
+				await axios.post(`/api/${params.storeId}/products`, data)
 			}
 			router.refresh()
-			router.push(`/${params.storeId}/billboards`)
+			router.push(`/${params.storeId}/products`)
 			router.refresh()
 			toast.success(toastMessage)
 		} catch (error) {
@@ -105,14 +105,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, categorie
 		try {
 			setLoading(true)
 			await axios.delete(
-				`/api/${params.storeId}/billboards/${params.billboardId}`
+				`/api/${params.storeId}/products/${params.productId}`
 			)
 			router.refresh()
-			router.push(`/${params.storeId}/billboards`)
+			router.push(`/${params.storeId}/products`)
 			toast.success('Product deleted')
 		} catch (error) {
 			toast.error(
-				'Make sure you removed all categories that are using this billboard first.'
+				'Something went wrong trying to delete the product.'
 			)
 		} finally {
 			setLoading(false)
@@ -164,8 +164,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, categorie
 											field.onChange([...field.value, { url }])
 										}
 										onRemove={(url) =>
-											field.onChange(
-												...field.value.filter((current) => current.url !== url)
+											field.onChange([
+												...field.value.filter((current) => current.url !== url)]
 											)
 										}
 									/>
