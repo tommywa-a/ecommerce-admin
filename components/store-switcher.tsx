@@ -59,7 +59,10 @@ export default function StoreSwitcher({
 	}
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
+		<Popover
+			open={open}
+			onOpenChange={setOpen}
+		>
 			<PopoverTrigger asChild>
 				<Button
 					variant='outline'
