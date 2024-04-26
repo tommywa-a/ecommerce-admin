@@ -1,3 +1,4 @@
+import { getSalesCount } from "@/actions/get-sales-count";
 import { getTotalRevenue } from "@/actions/get-total-revenue";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -16,7 +17,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({
   params
 }) => {
   const totalRevenue = await getTotalRevenue(params.storeId)
-  const salesCount = () => {}
+  const salesCount = await getSalesCount(params.storeId)
   const stockCount = () => {}
 
   return (
@@ -34,7 +35,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {formatter.format(100)}
+                {formatter.format(totalRevenue)}
               </div>
             </CardContent>
           </Card>
@@ -47,7 +48,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                +25
+                +{salesCount}
               </div>
             </CardContent>
           </Card>
