@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { ModalProvider } from "@/providers/modal-provider";
 
 import "./globals.css";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,9 +24,11 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
       <body className={inter.className}>
-        <Toaster />
-        <ModalProvider />
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem >
+          <Toaster />
+          <ModalProvider />
+          {children}
+        </ThemeProvider>
         </body>
     </html>
     </ClerkProvider>
