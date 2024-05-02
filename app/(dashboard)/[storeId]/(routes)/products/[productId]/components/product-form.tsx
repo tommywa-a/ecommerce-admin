@@ -337,7 +337,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 									<div className='space-y-1 leading-none'>
 										<FormLabel>Featured</FormLabel>
 										<FormDescription>
-											If checked, this product will appear as "Featured" on the
+											If checked, this product will appear as &quot;Featured&quot; on the
 											store home page.
 										</FormDescription>
 									</div>
