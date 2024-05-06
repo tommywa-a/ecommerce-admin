@@ -1,11 +1,20 @@
 import Stripe from "stripe"
+import crypto from "crypto"
 import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 
 import { stripe } from "@/lib/stripe"
 import prismadb from "@/lib/prismadb"
 
-export async function POST(req: Request) {
+const secret = process.env.PAYSTACK_WEBHOOK_SECRET!
+
+export async function POST(req: Request, res: Response) {
+  const hash = crypto.createHmac('sha512', secret).update(JSON.stringify(req.body)).digest('hex');
+  if (hash == req.headers.get('x-paystack-signature')) {
+    // Retrieve the request's body
+    const event = req.body;
+    // Do something with event  
+    }
   const body = await req.text()
   const signature = headers().get("Stripe-Signature") as string
 
