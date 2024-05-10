@@ -1,7 +1,5 @@
-import Stripe from 'stripe'
 import { NextResponse } from 'next/server'
 
-import { stripe } from '@/lib/stripe'
 import prismadb from '@/lib/prismadb'
 
 const corsHeaders = {
@@ -9,6 +7,14 @@ const corsHeaders = {
 	'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
 	'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 }
+
+const secretKey: string = process.env.PAYSTACK_TEST_SECRET_KEY as string;
+const url: string = process.env.NEXT_PUBLIC_PAYSTACK_PAYMENT_URL as string;
+
+const getCommonHeaders = () => ({
+  Authorization: `Bearer ${secretKey}`,
+  'Content-Type': 'application/json',
+});
 
 export async function OPTIONS() {
 	return NextResponse.json({}, { headers: corsHeaders })
@@ -32,7 +38,7 @@ export async function POST(
 		},
 	})
 
-	const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = []
+	const line_items: any = []
 
 	products.forEach((product) => {
 		line_items.push({
@@ -63,22 +69,41 @@ export async function POST(
 		},
 	})
 
-	const session = await stripe.checkout.sessions.create({
-		line_items,
-		mode: 'payment',
-		billing_address_collection: 'required',
-		phone_number_collection: {
-			enabled: true,
-		},
-		success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
-		cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?cancelled=1`,
-		metadata: {
-			orderId: order.id,
-		},
-	})
+	const newAmount = line_items.reduce((acc: number, item: { price_data: { unit_amount: number } }) => acc + item.price_data.unit_amount, 0)
+
+	const options = {
+    method: 'POST',
+    headers: getCommonHeaders(),
+    body: JSON.stringify({
+      email: "tomiwa95@gmail.com",
+      amount: newAmount,
+      currency: "NGN",
+      callback_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
+      metadata:{
+				orderId: order.id,
+			},
+    }),
+  }
+
+	// const session = await stripe.checkout.sessions.create({
+	// 	line_items,
+	// 	mode: 'payment',
+	// 	billing_address_collection: 'required',
+	// 	phone_number_collection: {
+	// 		enabled: true,
+	// 	},
+	// 	success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
+	// 	cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?cancelled=1`,
+	// 	metadata: {
+	// 		orderId: order.id,
+	// 	},
+	// })
+
+	const response = await fetch(`${url}/transaction/initialize`, options);
+    const session = await response.json();
 
 	return NextResponse.json(
-		{ url: session.url },
+		{ url: session.data.authorization_url },
 		{
 			headers: corsHeaders,
 		}
