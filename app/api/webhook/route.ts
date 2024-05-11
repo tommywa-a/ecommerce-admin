@@ -40,7 +40,7 @@ export async function POST(req: Request, res: Response) {
     }
 
       return new NextResponse( null, {status: 200})
-    })
+    }
   // const body = await req.text()
   // const signature = headers().get("Stripe-Signature") as string
 
