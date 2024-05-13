@@ -4,18 +4,36 @@ import { NextResponse } from "next/server"
 
 import prismadb from "@/lib/prismadb"
 
-const secret = process.env.PAYSTACK_WEBHOOK_SECRET!
+const secret = process.env.PAYSTACK_TEST_SECRET_KEY as string
+
+function verify(eventData: any, signature: string): boolean {
+  const hmac = crypto.createHmac('sha512', secret);
+  const expectedSignature = hmac.update(JSON.stringify(eventData)).digest('hex');
+  return expectedSignature === signature;
+}
 
 export async function POST(req: Request, res: Response) {
-  const hash = crypto.createHmac('sha512', secret).update(JSON.stringify(req.body)).digest('hex');
-  if (hash == req.headers.get('x-paystack-signature')) {
-    // Retrieve the request's body
-    const eventData = req.body;
-    // Do something with event  
-    if (eventData && eventData.event === 'transfer.success') {
+  const eventData = await req.json();
+  const signature = req.headers.get('x-paystack-signature') as string
+
+  if (!verify(eventData, signature)) {
+    return new NextResponse( null, {status: 400});
+  }
+
+  if (eventData.event === 'charge.success') {
+    const transactionId = eventData.data.id;
+    // Process the successful transaction to maybe fund wallet and update your WalletModel
+    console.log(`Transaction ${transactionId} was successful`);
+  }
+
+
+  
+    
+   
+
       const order = await prismadb.order.update({
         where: {
-          id: event?.metadata?.orderId,
+          id: eventData?.data?.metadata?.orderId,
         },
         data: {
           isPaid: true,
@@ -37,10 +55,15 @@ export async function POST(req: Request, res: Response) {
           isArchived: true
         }
       })
-    }
+
+  
+     
+
+    console.log(`Webhook tested`)
+    console.log(`Webhook data`, eventData)
 
       return new NextResponse( null, {status: 200})
-    }
+    
   // const body = await req.text()
   // const signature = headers().get("Stripe-Signature") as string
 
@@ -99,5 +122,4 @@ export async function POST(req: Request, res: Response) {
   //   })
   // }
 
-  return new NextResponse(null, {status: 200})
 }
