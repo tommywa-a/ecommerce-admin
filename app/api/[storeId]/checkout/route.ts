@@ -79,6 +79,7 @@ export async function POST(
       amount: newAmount,
       currency: "NGN",
       callback_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
+			onClose: `${process.env.FRONTEND_STORE_URL}/cart?cancelled=1`,
       metadata:{
 				orderId: order.id,
 			},
