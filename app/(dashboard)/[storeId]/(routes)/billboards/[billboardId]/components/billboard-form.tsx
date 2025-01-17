@@ -27,6 +27,7 @@ import ImageUpload from '@/components/ui/image-upload'
 
 const formSchema = z.object({
 	label: z.string().min(1, { message: 'At least 1 character is required' }),
+	subLabel: z.string(),
 	imageUrl: z.string().min(1, { message: 'At least 1 character is required' }),
 })
 
@@ -54,9 +55,10 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 
 	const form = useForm<BillboardFormValues>({
 		resolver: zodResolver(formSchema),
-		defaultValues: initialData || {
-			label: '',
-			imageUrl: '',
+		defaultValues: {
+			label: initialData?.label || '',
+			subLabel: initialData?.subLabel || '',
+			imageUrl: initialData?.imageUrl || '',
 		},
 	})
 
@@ -160,6 +162,23 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 										<Input
 											disabled={loading}
 											placeholder='Billboard label'
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='subLabel'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Sub Label</FormLabel>
+									<FormControl>
+										<Input
+											disabled={loading}
+											placeholder='Billboard sub-label'
 											{...field}
 										/>
 									</FormControl>

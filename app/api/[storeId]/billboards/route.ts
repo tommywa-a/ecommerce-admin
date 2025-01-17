@@ -10,7 +10,7 @@ export async function POST(
 		const { userId } = await auth()
 		const body = await req.json()
 
-		const { label, imageUrl } = body
+		const { label, subLabel, imageUrl } = body
 
 		if (!userId) {
 			return new NextResponse('Unauthenticated', { status: 401 })
@@ -42,6 +42,7 @@ export async function POST(
 		const billboard = await prismadb.billboard.create({
 			data: {
 				label,
+				subLabel,
 				imageUrl,
 				storeId: params.storeId,
 			},
