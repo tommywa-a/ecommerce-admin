@@ -18,7 +18,7 @@ const BillboardsPage = async ({ params }: { params: { storeId: string } }) => {
 		id: item.id,
 		label: item.label,
 		subLabel: item.subLabel || '',
-		createdAt: format(item.createdAt, 'MMMM do, yyyy'),
+		createdAt: format(item.createdAt, 'MMMM do, yyyy HH:mm:ss.SSS O'),
 	}))
 
 	return (
