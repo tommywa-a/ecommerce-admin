@@ -1,8 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# E-commerce Admin Dashboard
+
+An admin dashboard application for managing an E-commerce platform, providing tools for product management, order tracking, and user administration.
+
+## Table of Contents
+
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the Application](#running-the-application)
+- [Environment Variables](#environment-variables)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+## Features
+
+- **Product Management**: Add, update, and delete products.
+- **Order Tracking**: Monitor and manage customer orders.
+- **Store-front configurations**: Manage features of a store front from the admin site.
+- **Analytics Dashboard**: View sales statistics and performance metrics.
+
+## Technologies Used
+
+- **Frontend**: [Next.js](https://nextjs.org/) (React framework)
+- **Backend**: [Next.js API Routes](https://nextjs.org/docs/api-routes/introduction)
+- **Database**: [Prisma](https://www.prisma.io/) ORM with your choice of database
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- **Node.js**: Ensure you have Node.js installed. You can download it from [nodejs.org](https://nodejs.org/).
+- **Package Manager**: npm, yarn, or pnpm installed.
+- **Database**: PostgreSQL, MySQL, or SQLite.
+
+### Installation
+
+1. **Clone the Repository**:
+
+   ```bash
+   git clone https://github.com/tommywa-a/ecommerce-admin.git
+   cd ecommerce-admin
+   ```
+
+2. **Install Dependencies**:
+
+   Depending on your package manager:
+
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
+
+3. **Set Up Environment Variables**:
+
+   Create a `.env` file in the root directory and add your environment variables as required by your application.
+
+4. **Run Database Migrations** (if applicable):
+
+   ```bash
+   npx prisma migrate dev
+   ```
+
+### Running the Application
+
+Start the development server:
 
 ```bash
 npm run dev
@@ -10,27 +78,37 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Create a `.env` file in the root directory and add the following:
 
-## Learn More
+```env
+DATABASE_URL=your_database_connection_string
+NEXTAUTH_SECRET=your_auth_secret
+NEXTAUTH_URL=http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Contributions are welcome! Please follow these steps:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes with clear messages.
+4. Submit a pull request.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is licensed under the **MIT License**.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Contact
+
+For any inquiries, reach out via email: **[tomiwa.aderibigbe1@gmail.com](mailto:tomiwa.aderibigbe1@gmail.com)**
+
+---
+
+Happy Coding! 🚀
