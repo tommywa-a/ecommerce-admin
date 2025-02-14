@@ -46,7 +46,8 @@ export async function PATCH(
 			sizeId,
 			images,
 			isFeatured,
-			isArchived
+			isArchived,
+			quantityInStock
 		 } = body
 
 		if (!userId) {
@@ -81,6 +82,10 @@ export async function PATCH(
 			return new NextResponse('Product ID is required', { status: 400 })
 		}
 
+		if (quantityInStock < 0) {
+			return new NextResponse('Quantity in stock must be greater than 0', { status: 400 })
+		}
+
 		const storeByUserId = await prismadb.store.findFirst({
 			where: {
 				id: params.storeId,
@@ -106,7 +111,8 @@ export async function PATCH(
 					deleteMany: {},
 				},
 				isFeatured,
-				isArchived
+				isArchived,
+				quantityInStock,
 			},
 		})
 

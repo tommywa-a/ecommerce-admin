@@ -18,7 +18,8 @@ export async function POST(
 			sizeId,
 			images,
 			isFeatured,
-			isArchived
+			isArchived,
+			quantityInStock
 		 } = body
 
 		if (!userId) {
@@ -53,6 +54,10 @@ export async function POST(
 			return new NextResponse('Store ID is required', { status: 400 })
 		}
 
+		if (quantityInStock < 0) {
+			return new NextResponse('Quantity in stock must be a non-negative number', { status: 400 })
+		}
+
 		const storeByUserId = await prismadb.store.findFirst({
 			where: {
 				id: params.storeId,
@@ -74,6 +79,7 @@ export async function POST(
 				colorId,
 				sizeId,
 				storeId: params.storeId,
+				quantityInStock,
 				images: {
 					createMany: {
 						data: [
@@ -133,5 +139,3 @@ export async function GET(
 		return new NextResponse('Internal Server Error', { status: 500 })
 	}
 }
-
-

@@ -38,6 +38,7 @@ const formSchema = z.object({
 	name: z.string().min(1, { message: 'At least 1 character is required' }),
 	images: z.object({ url: z.string() }).array(),
 	price: z.coerce.number().min(1),
+	quantityInStock: z.coerce.number().min(0),
 	categoryId: z.string().min(1),
 	colorId: z.string().min(1),
 	sizeId: z.string().min(1),
@@ -75,13 +76,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData
 			? {
-					...initialData,
-					price: parseFloat(String(initialData?.price)),
+					name: initialData.name,
+					images: initialData.images,
+					price: isBigint(initialData.price) ? (initialData.price as bigint).toNumber() : parseFloat(String(initialData.price)),
+					quantityInStock: isBigint(initialData.quantityInStock) ? (initialData.quantityInStock as bigint).toNumber() : parseFloat(String(initialData.quantityInStock)),
+					categoryId: initialData.categoryId,
+					colorId: initialData.colorId,
+					sizeId: initialData.sizeId,
+					isFeatured: initialData.isFeatured,
+					isArchived: initialData.isArchived,
 			  }
 			: {
 					name: '',
 					images: [],
 					price: 0,
+					quantityInStock: 0,
 					categoryId: '',
 					colorId: '',
 					sizeId: '',
@@ -211,6 +220,26 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 											disabled={loading}
 											placeholder='9.99'
 											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name='quantityInStock'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Quantity in Stock</FormLabel>
+									<FormControl>
+										<Input
+											disabled={loading}
+											type='number'
+											min={0}
+											placeholder='Enter quantity in stock'
+											value={field.value}
+											onChange={(e) => field.onChange(parseInt(e.target.value))}
 										/>
 									</FormControl>
 									<FormMessage />
@@ -377,4 +406,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 			</Form>
 		</>
 	)
+}
+
+function isBigint(value: any): value is bigint {
+	return typeof value === 'bigint' || (typeof value === 'object' && value !== null && 'toNumber' in value);
 }
